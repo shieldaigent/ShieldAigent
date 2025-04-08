@@ -172,3 +172,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+# Hugging Face model cache (DistilBERT)
+~/.cache/huggingface/
+
+# Sensitive files
+*.env
+secrets/
