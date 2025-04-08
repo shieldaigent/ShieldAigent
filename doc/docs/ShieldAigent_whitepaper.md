@@ -25,4 +25,4 @@ A cryptic promise of a decentralized network that “sees what others cannot.”
 ## Get Involved
 - Follow us on [X: @ShieldAigent](https://x.com/ShieldAigent)
 - Join our [DAO: @ShieldAigentDAO](https://x.com/ShieldAigentDAO)
-- Discord link coming soon.
+- Telegram link coming soon.
