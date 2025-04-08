@@ -1,0 +1,4 @@
+url,label,prediction,prediction_label
+http://fakebank.com/login,1,1,Phishing
+https://google.com,0,1,Phishing
+http://scam123.com,1,1,Phishing
