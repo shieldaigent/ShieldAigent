@@ -1,12 +1,20 @@
-# Shield Aigent 🛡️
-Revolutionizing cybersecurity with AI and IoT. Join us to build the future of security!
+# ShieldAigent
 
-## What We Do
-Shield Aigent uses AI to detect cyber threats like phishing, with plans to integrate IoT devices for real-time protection.
+A decentralized, AI-driven cybersecurity platform to protect the digital world. Our token, SHIELD, launches on the Base network via Cliza in April 2025.
 
-## Governance
-The Shield Aigent DAO will let our community vote on our roadmap using the SHIELD token (launching soon).
+## Vision
+- Detect and prevent cyber threats (web1 to web3) using AI.
+- Share market security trends (stocks, gold, bonds, crypto, crude oil).
+- Empower the community through governance and real-world devices.
+
+## Whitepaper and Roadmap
+Dive into our vision and journey:
+- [ShieldAigent Whitepaper](docs/ShieldAigent_Whitepaper.md)
+- [Roadmap](docs/ROADMAP.md)
+
+*The roadmap reveals the path, but the shadows hold the key—watch for the Sentinel’s awakening.*
 
 ## Get Involved
-- Check out our phishing detection script: [shield_base.py](shield_base.py)
-- Join our community: [X: @Shield_Aigent](https://x.com/Shield_Aigent), [DAO: @ShieldAigentDAO.base.eth](https://x.com/ShieldAigentDAO), [Telegram link coming soon].
+- Follow us on [X: @ShieldAigent](https://x.com/ShieldAigent)
+- Join our [DAO: @ShieldAigentDAO](https://x.com/ShieldAigentDAO)
+- telegram link coming soon.
