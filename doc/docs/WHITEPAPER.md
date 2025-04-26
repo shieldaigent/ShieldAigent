@@ -12,8 +12,7 @@ Welcome to *ShieldAigent*—a decentralized platform where AI, IoT, and communit
 - Total Supply: 1 billion SHIELD tokens.
 - Allocation:
   - 80% to the community (public sale via Cliza launchpad).
-  - 20% to the team (vested over 9 months, starting April 26, 2025).
-- Launch Price: 1 SHIELD = $0.10.
+  - 20% to the team (vested over 9 months, starting April 26, 2025)
 - Utility: SHIELD powers governance and access to premium features. Hold SHIELD to vote in our DAO, access AI-driven phishing detection, and activate real-world devices like the *ShieldAigent Guardian*.
 
 ## Roadmap
