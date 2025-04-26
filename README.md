@@ -1,6 +1,6 @@
 # ShieldAigent
 
-A decentralized, AI-driven cybersecurity platform to protect the digital world. Our token, SHIELD, launches on the Base network via Cliza in April 2025.
+A decentralized, AI-driven cybersecurity platform to protect the digital world. Our token, SHIELD, launches on the Base network via Cliza on April 26, 2025.
 
 ## Vision
 - Detect and prevent cyber threats (web1 to web3) using AI.
@@ -9,12 +9,12 @@ A decentralized, AI-driven cybersecurity platform to protect the digital world. 
 
 ## Whitepaper and Roadmap
 Dive into our vision and journey:
-- [Whitepaper](docs/WHITEPAPER.md)
+- [ShieldAigent Whitepaper](docs/ShieldAigent_Whitepaper.md)
 - [Roadmap](docs/ROADMAP.md)
 
 *The roadmap reveals the path, but the shadows hold the key—watch for the Sentinel’s awakening.*
 
 ## Get Involved
-- Follow us on [X: @ShieldAigent](https://x.com/ShieldAigent)
+- Follow us on [X: @Shield_Aigent](https://x.com/Shield_Aigent)
 - Join our [DAO: @ShieldAigentDAO](https://x.com/ShieldAigentDAO)
-- telegram link coming soon.
+- Join our [Telegram channel: @ShieldAigent](https://t.me/ShieldAigent) for updates and community engagement (link coming soon).
