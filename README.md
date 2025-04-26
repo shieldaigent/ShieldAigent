@@ -9,7 +9,7 @@ A decentralized, AI-driven cybersecurity platform to protect the digital world. 
 
 ## Whitepaper and Roadmap
 Dive into our vision and journey:
-- [ShieldAigent Whitepaper](docs/ShieldAigent_Whitepaper.md)
+- [ShieldAigent Whitepaper](docs/WHITEPAPER.md)
 - [Roadmap](docs/ROADMAP.md)
 
 *The roadmap reveals the path, but the shadows hold the key—watch for the Sentinel’s awakening.*
