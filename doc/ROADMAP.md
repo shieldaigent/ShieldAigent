@@ -6,7 +6,7 @@ Welcome to the *ShieldAigent* ecosystem—a decentralized, AI-driven cybersecuri
 Focus: *The Genesis Unveiled*  
 - Launch SHIELD on Base via Cliza on April 26, 2025 (1 SHIELD = $0.10).  
 - List on Uniswap (Base) with a 50/50 liquidity pool (SHIELD/ETH).  
-- Announce on X (@ShieldAigent) and Telegram, with an X Spaces event.
+- Announce on X (@Shield_Aigent) and Telegram, with an X Spaces event.
 
 ## Q3 2025: DAO Creation and Governance Activation (July–September 2025)
 Focus: *The Council of Shadows*  
