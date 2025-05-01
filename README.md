@@ -9,8 +9,13 @@ A decentralized, AI-driven cybersecurity platform to protect the digital world. 
 
 ## Whitepaper and Roadmap
 Dive into our vision and journey:
+<<<<<<< HEAD
 - [Whitepaper](docs/WHITEPAPER.md)
 - [Roadmap](docs/ROADMAP.md)
+=======
+- [Whitepaper](doc/docs/WHITEPAPER.md)
+- [Roadmap](doc/docs/ROADMAP.md)
+>>>>>>> 1d67f302059c46c2e0408b13adc8a154e3f428fe
 
 *The roadmap reveals the path, but the shadows hold the key—watch for the Sentinel’s awakening.*
 
