@@ -2,16 +2,17 @@ import os
 import logging
 import requests
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry # type: ignore
-import schedule # type: ignore
+from urllib3.util.retry import Retry
+
+import schedule
 import time
 import random
-import undetected_chromedriver as uc # type: ignore
-from selenium.webdriver.common.by import By # type: ignore
-from selenium.webdriver.common.keys import Keys # type: ignore
-from selenium.webdriver.support.ui import WebDriverWait # type: ignore
-from selenium.webdriver.support import expected_conditions as EC # type: ignore
-from dotenv import load_dotenv # type: ignore
+import undetected_chromedriver as uc
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
@@ -466,7 +467,7 @@ def get_crypto_trends():
         logger.info("Fetched crypto trends from Binance via RapidAPI.")
         return f"Binance Trends: {', '.join(trends)} | Sentiment: {sentiment}"
     except requests.exceptions.ConnectionError as ce:
-        logger.error(f"Connection error fetching crypto trends: {e}")
+        logger.error(f"Connection error fetching crypto trends: {ce}")
         return "ShieldAigent here! Connection broke—internet’s playing hide-and-seek! I’ll try again soon."
     except Exception as e:
         logger.error(f"Error fetching crypto trends: {e}")
@@ -513,26 +514,24 @@ def get_other_market_trends():
         logger.error(f"Error fetching other market trends: {e}")
         return "ShieldAigent here! Markets are playing hide-and-seek—I’ll catch ‘em soon!"
 
-# Fetch X sentiment (Tweet Search API via RapidAPI)
+# Fetch X sentiment using Social Searcher API
 def get_x_sentiment(query):
     try:
-        url = "https://tweet-search1.p.rapidapi.com/search"
-        querystring = {"q": query, "count": "50"}
+        url = "https://social-searcher.p.rapidapi.com/v2/search"
+        querystring = {"q": query, "network": "twitter"}
         headers = {
             "X-RapidAPI-Key": RAPIDAPI_KEY,
-            "X-RapidAPI-Host": "tweet-search1.p.rapidapi.com"
+            "X-RapidAPI-Host": "social-searcher.p.rapidapi.com"
         }
         response = session.get(url, headers=headers, params=querystring)
         response.raise_for_status()
-        tweets = response.json()
-        positive = sum(1 for tweet in tweets if "positive" in tweet['text'].lower() or "bullish" in tweet['text'].lower())
-        total = len(tweets)
+        data = response.json()
+        posts = data.get("posts", [])
+        positive = sum(1 for post in posts if "positive" in post.get('text', '').lower() or "bullish" in post.get('text', '').lower())
+        total = len(posts)
         sentiment = f"{(positive/total)*100:.1f}% positive" if total > 0 else "neutral"
         logger.info(f"Fetched X sentiment: {sentiment}")
         return sentiment
-    except requests.exceptions.ConnectionError as ce:
-        logger.error(f"Connection error fetching X sentiment: {ce}")
-        return "neutral"
     except Exception as e:
         logger.error(f"Error fetching X sentiment: {e}")
         return "neutral"
@@ -560,6 +559,29 @@ def scan_iot_vulnerabilities():
         logger.error(f"Error scanning IoT vulnerabilities: {e}")
         return "ShieldAigent alert! IoT scan hit a snag—cyber threats are sneaky! I’ll be back."
 
+# Monitor scams using Social Searcher API
+def monitor_scams():
+    try:
+        url = "https://social-searcher.p.rapidapi.com/v2/search"
+        querystring = {"q": "double your BTC OR cryptocurrency scam", "network": "twitter"}
+        headers = {
+            "X-RapidAPI-Key": RAPIDAPI_KEY,
+            "X-RapidAPI-Host": "social-searcher.p.rapidapi.com"
+        }
+        response = session.get(url, headers=headers, params=querystring)
+        response.raise_for_status()
+        data = response.json()
+        posts = data.get("posts", [])
+        for post in posts:
+            text = post.get('text', '').lower()
+            if "scam" in text and ("double" in text or "giveaway" in text):
+                post_content = f"ShieldAigent alert! Scam detected: {text[:50]}... #Scam #ShieldAigent"
+                agent.post_update(post_content)
+                break
+        logger.info("Monitored scams with Social Searcher API.")
+    except Exception as e:
+        logger.error(f"Error monitoring scams: {e}")
+
 # Initialize the engagement agent
 agent = ShieldAigentEngagementAgent(username=X_USERNAME, password=X_PASSWORD)
 
@@ -574,28 +596,6 @@ def post_iot_alert():
     threats = scan_iot_vulnerabilities()
     post = f"🚨 ShieldAigent’s IoT alert! {threats} #Cybersecurity #ShieldAigent"
     agent.post_update(post)
-
-def monitor_scams():
-    try:
-        url = "https://tweet-search1.p.rapidapi.com/search"
-        querystring = {"q": "double your BTC OR cryptocurrency scam", "count": "10"}
-        headers = {
-            "X-RapidAPI-Key": RAPIDAPI_KEY,
-            "X-RapidAPI-Host": "tweet-search1.p.rapidapi.com"
-        }
-        response = session.get(url, headers=headers, params=querystring)
-        response.raise_for_status()
-        tweets = response.json()
-        for tweet in tweets:
-            if "scam" in tweet['text'].lower() and ("double" in tweet['text'].lower() or "giveaway" in tweet['text'].lower()):
-                post = f"ShieldAigent alert! Scam detected: {tweet['text'][:50]}... #Scam #ShieldAigent"
-                agent.post_update(post)
-                break
-        logger.info("Monitored scams with RapidAPI.")
-    except requests.exceptions.ConnectionError as ce:
-        logger.error(f"Connection error monitoring scams: {ce}")
-    except Exception as e:
-        logger.error(f"Error monitoring scams: {e}")
 
 def run_engagement():
     agent.run_engagement_routine()
@@ -621,7 +621,10 @@ while True:
     try:
         schedule.run_pending()
         time.sleep(60)
+    except KeyboardInterrupt:
+        logger.info("Script interrupted by user. Shutting down.")
+        agent.close()
+        break
     except Exception as e:
         logger.error(f"Error in scheduler loop: {e}")
         time.sleep(60)  # Wait before retrying
-        
