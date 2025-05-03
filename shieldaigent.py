@@ -619,7 +619,9 @@ schedule.every().hour.do(monitor_scams)
 # Run the scheduler
 while True:
     try:
+        logger.info("Checking for pending scheduled tasks...")
         schedule.run_pending()
+        logger.info("Finished checking scheduled tasks.")
         time.sleep(60)
     except KeyboardInterrupt:
         logger.info("Script interrupted by user. Shutting down.")
@@ -627,4 +629,4 @@ while True:
         break
     except Exception as e:
         logger.error(f"Error in scheduler loop: {e}")
-        time.sleep(60)  # Wait before retrying
+        time.sleep(60)
