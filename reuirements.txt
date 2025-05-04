@@ -1,6 +1,0 @@
-requests
-schedule
-python-dotenv
-undetected-chromedriver
-selenium
-textblob
