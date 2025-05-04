@@ -5,7 +5,7 @@ import time
 import random
 import tweepy
 import requests
-from textblob import TextBlob
+from textblob import TextBlob  # Import TextBlob for sentiment analysis
 from dotenv import load_dotenv
 
 # Load environment variables
