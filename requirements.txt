@@ -5,3 +5,4 @@ undetected-chromedriver
 selenium
 textblob
 flask 
+tweepy
