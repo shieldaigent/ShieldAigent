@@ -4,3 +4,4 @@ python-dotenv
 undetected-chromedriver
 selenium
 textblob
+flask
