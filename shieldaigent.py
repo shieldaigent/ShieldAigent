@@ -21,10 +21,16 @@ FINNHUB_API_KEY = os.getenv('FINNHUB_API_KEY')
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# Initialize X API client
-auth = tweepy.OAuthHandler(X_API_KEY, X_API_SECRET)
-auth.set_access_token(X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET)
-api = tweepy.API(auth, wait_on_rate_limit=True)
+logger.info("ShieldAigent starting up...")
+
+try:
+    auth = tweepy.OAuthHandler(X_API_KEY, X_API_SECRET)
+    auth.set_access_token(X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET)
+    api = tweepy.API(auth, wait_on_rate_limit=True)
+    logger.info("Tweepy authenticated successfully.")
+except Exception as e:
+    logger.error(f"Tweepy authentication failed: {e}")
+    exit(1)
 
 class ShieldAigentEngagementAgent:
     def __init__(self):
