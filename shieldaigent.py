@@ -358,7 +358,7 @@ schedule.every().day.at("19:30").do(agent.run_engagement_routine)
 
 schedule.every().day.at("12:00").do(monitor_scams)
 
-from flask import Flask
+from flask import Flask # type: ignore
 import threading
 
 app = Flask(__name__)
