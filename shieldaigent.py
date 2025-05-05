@@ -358,16 +358,29 @@ schedule.every().day.at("19:30").do(agent.run_engagement_routine)
 
 schedule.every().day.at("12:00").do(monitor_scams)
 
-# Run the scheduler
-while True:
-    try:
-        logger.info("Checking for pending scheduled tasks...")
-        schedule.run_pending()
-        logger.info("Finished checking scheduled tasks.")
-        time.sleep(60)
-    except KeyboardInterrupt:
-        logger.info("Script interrupted by user. Shutting down.")
-        break
-    except Exception as e:
-        logger.error(f"Error in scheduler loop: {e}")
-        time.sleep(60)
+from flask import Flask
+import threading
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "ShieldAigent is running!"
+
+def run_scheduler():
+    while True:
+        try:
+            logger.info("Checking for pending scheduled tasks...")
+            schedule.run_pending()
+            logger.info("Finished checking scheduled tasks.")
+            time.sleep(60)
+        except KeyboardInterrupt:
+            logger.info("Script interrupted by user. Shutting down.")
+            break
+        except Exception as e:
+            logger.error(f"Error in scheduler loop: {e}")
+            time.sleep(60)
+
+if __name__ == "__main__":
+    threading.Thread(target=run_scheduler, daemon=True).start()
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
