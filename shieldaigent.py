@@ -5,7 +5,7 @@ import time
 import random
 import tweepy
 import requests
-from textblob import TextBlob  # Import TextBlob for sentiment analysis
+from textblob import TextBlob
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -353,7 +353,7 @@ schedule.every().day.at("20:30").do(post_market_update)
 
 schedule.every().day.at("16:00").do(post_iot_alert)
 
-schedule.every().day.at("09:30").do(agent.run_engagement_routine)
+schedule.every().day.at("06:30").do(agent.run_engagement_routine)  # Changed from 09:30 to 06:30
 schedule.every().day.at("19:30").do(agent.run_engagement_routine)
 
 schedule.every().day.at("12:00").do(monitor_scams)
