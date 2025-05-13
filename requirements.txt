@@ -5,3 +5,6 @@ undetected-chromedriver
 selenium
 textblob
 tweepy
+transformers
+torch
+pandas
