@@ -364,14 +364,6 @@ schedule.every().day.at("19:30").do(agent.run_engagement_routine)
 
 schedule.every().day.at("12:00").do(monitor_scams)
 
-from flask import Flask # type: ignore
-import threading
-
-app = Flask(__name__)
-
-@app.route("/")
-def home():
-    return "ShieldAigent is running!"
 
 def run_scheduler():
     while True:
@@ -388,5 +380,4 @@ def run_scheduler():
             time.sleep(60)
 
 if __name__ == "__main__":
-    threading.Thread(target=run_scheduler, daemon=True).start()
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    run_scheduler()
