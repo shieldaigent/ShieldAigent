@@ -1,7 +1,5 @@
 requests
 schedule
 python-dotenv
-undetected-chromedriver
 textblob
 tweepy
-pandas
