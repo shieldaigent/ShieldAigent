@@ -1,6 +1,6 @@
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
-import pandas as pd
-import torch
+import pandas as pd 
+import torch 
 
 # Load the pre-trained model and tokenizer
 print("Loading DistilBERT model for phishing detection...")
@@ -43,8 +43,8 @@ subprocess.run(["git", "clone", "https://github.com/shieldaigent/shieldbase.git"
 
 
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
-import pandas as pd
-import torch
+import pandas as pd # type: ignore
+import torch # type: ignore
 
 # Function to append URLs to urls.txt
 def save_urls(new_urls):
