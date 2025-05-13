@@ -2,9 +2,6 @@ requests
 schedule
 python-dotenv
 undetected-chromedriver
-selenium
 textblob
 tweepy
-transformers
-torch
 pandas
