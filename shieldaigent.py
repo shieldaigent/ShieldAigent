@@ -6,7 +6,7 @@ import tweepy
 import requests
 from textblob import TextBlob
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, request
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 
@@ -126,7 +126,7 @@ class ShieldAigentEngagementAgent:
     def reply_to_gm_posts(self, max_replies=1):  # 1 reply per run
         """Reply to 'gm' posts"""
         try:
-            gm_tweets = api.search_tweets(q="gm -from:@Shield_Aigent", count=1, tweet_mode="extended")
+            gm_tweets = api.search(q="gm -from:@Shield_Aigent", count=1, tweet_mode="extended")
             gm_replies_made = 0
 
             for tweet in gm_tweets:
@@ -174,9 +174,45 @@ class ShieldAigentEngagementAgent:
 
 # Fetch X sentiment using X API and TextBlob
 def get_x_sentiment(query):
-    # Hardcoded to "neutral" due to X API Free Basic plan restrictions (no read access)
     logger.info(f"Skipping X sentiment fetch for query: {query} due to API restrictions")
     return "neutral"
+
+# Uncomment this when you upgrade your X API plan
+"""
+def get_x_sentiment(query):
+    try:
+        tweets = api.search(
+            q=f"{query} -from:@Shield_Aigent",
+            count=20,
+            tweet_mode="extended"
+        )
+        positive = 0
+        negative = 0
+        total = len(tweets)
+        for tweet in tweets:
+            text = tweet.full_text
+            analysis = TextBlob(text)
+            polarity = analysis.sentiment.polarity
+            if polarity > 0:
+                positive += 1
+            elif polarity < 0:
+                negative += 1
+        if total == 0:
+            return "neutral"
+        positive_percent = (positive / total) * 100
+        negative_percent = (negative / total) * 100
+        if positive_percent > negative_percent + 10:
+            sentiment = f"{positive_percent:.1f}% positive"
+        elif negative_percent > positive_percent + 10:
+            sentiment = f"{negative_percent:.1f}% negative"
+        else:
+            sentiment = "neutral"
+        logger.info(f"Fetched X sentiment: {sentiment}")
+        return sentiment
+    except Exception as e:
+        logger.error(f"Error fetching X sentiment: {e}")
+        return "neutral"
+"""
 
 # Fetch Finnhub sentiment for a stock ticker
 def get_finnhub_sentiment(ticker):
@@ -278,7 +314,7 @@ def monitor_scams():
             logger.info("Daily scam post limit reached.")
             return
 
-        tweets = api.search_tweets(
+        tweets = api.search(
             q="double your BTC OR cryptocurrency scam -from:@Shield_Aigent",
             count=10,
             tweet_mode="extended"
@@ -331,7 +367,6 @@ def post_iot_alert():
 agent = ShieldAigentEngagementAgent()
 
 # Set up APScheduler
-# Set up APScheduler
 scheduler = BackgroundScheduler(timezone="Africa/Lagos")  # WAT timezone
 
 # Schedule tasks
@@ -358,6 +393,7 @@ logger.info(f"Scheduled jobs: {[job.id for job in jobs]}")
 # Start the scheduler
 logger.info("Starting APScheduler...")
 scheduler.start()
+
 # Flask routes
 @app.route("/")
 def home():
@@ -365,6 +401,9 @@ def home():
 
 @app.route("/post-now")
 def post_now():
+    api_key = request.args.get('api_key')
+    if api_key != "your-secret-key-123":  # Replace with your own secret key
+        return "Unauthorized: Invalid API key", 401
     try:
         post_market_update()
         return "Market update posted successfully!"
