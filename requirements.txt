@@ -3,3 +3,4 @@ schedule
 python-dotenv
 textblob
 tweepy
+flask
