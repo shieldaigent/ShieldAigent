@@ -239,7 +239,7 @@ def get_market_sentiment():
         # Fetch sentiment for stocks using Finnhub API
         for symbol in stock_symbols:
             sentiment = get_finnhub_sentiment(symbol)
-            stock_sentiments.append(f"{symbol}: {symbol}")
+            stock_sentiments.append(f"{symbol}: {sentiment}")
         
         # Fetch sentiment for gold, bonds, oil using X API
         for symbol, name in commodity_symbols.items():
