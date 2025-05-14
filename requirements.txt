@@ -1,7 +1,6 @@
-requests
-schedule
-python-dotenv
-textblob
-tweepy
 flask
 apscheduler
+tweepy==3.10.0
+requests
+textblob
+python-dotenv
