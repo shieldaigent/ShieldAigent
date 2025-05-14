@@ -4,3 +4,4 @@ python-dotenv
 textblob
 tweepy
 flask
+apscheduler
