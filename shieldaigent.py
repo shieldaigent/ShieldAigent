@@ -331,6 +331,7 @@ def post_iot_alert():
 agent = ShieldAigentEngagementAgent()
 
 # Set up APScheduler
+# Set up APScheduler
 scheduler = BackgroundScheduler(timezone="Africa/Lagos")  # WAT timezone
 
 # Schedule tasks
@@ -347,10 +348,16 @@ scheduler.add_job(agent.run_engagement_routine, CronTrigger(hour=19, minute=30))
 
 scheduler.add_job(monitor_scams, CronTrigger(hour=12, minute=0))
 
+# Add a test job to run immediately for debugging
+scheduler.add_job(post_market_update, 'interval', seconds=60, id='test_job')  # Runs every 60 seconds
+
+# Log all scheduled jobs
+jobs = scheduler.get_jobs()
+logger.info(f"Scheduled jobs: {[job.id for job in jobs]}")
+
 # Start the scheduler
 logger.info("Starting APScheduler...")
 scheduler.start()
-
 # Flask routes
 @app.route("/")
 def home():
