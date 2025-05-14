@@ -1,12 +1,14 @@
 import os
 import logging
-import schedule
 import time
 import random
 import tweepy
 import requests
 from textblob import TextBlob
 from dotenv import load_dotenv
+from flask import Flask
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 # Load environment variables
 load_dotenv()
@@ -23,6 +25,10 @@ logger = logging.getLogger(__name__)
 
 logger.info("ShieldAigent starting up...")
 
+# Initialize Flask app
+app = Flask(__name__)
+
+# Initialize X API client
 try:
     auth = tweepy.OAuthHandler(X_API_KEY, X_API_SECRET)
     auth.set_access_token(X_ACCESS_TOKEN, X_ACCESS_TOKEN_SECRET)
@@ -64,11 +70,14 @@ class ShieldAigentEngagementAgent:
 
     def post_update(self, content):
         """Post an update to X using the X API"""
+        logger.info(f"Attempting to post: {content}")
         try:
-            api.update_status(status=content)
-            logger.info(f"Posted update: {content}")
+            response = api.update_status(status=content)
+            logger.info(f"Successfully posted update: {content} - Response: {response.id}")
+            return True
         except Exception as e:
-            logger.error(f"Error posting update: {e}")
+            logger.error(f"Failed to post update: {e}")
+            return False
 
     def reply_to_mentions(self, count=2):  # 2 replies per run
         """Reply to mentions of @Shield_Aigent"""
@@ -165,43 +174,15 @@ class ShieldAigentEngagementAgent:
 
 # Fetch X sentiment using X API and TextBlob
 def get_x_sentiment(query):
-    try:
-        tweets = api.search_tweets(
-            q=f"{query} -from:@Shield_Aigent",
-            count=20,
-            tweet_mode="extended"
-        )
-        positive = 0
-        negative = 0
-        total = len(tweets)
-        for tweet in tweets:
-            text = tweet.full_text
-            analysis = TextBlob(text)
-            polarity = analysis.sentiment.polarity
-            if polarity > 0:
-                positive += 1
-            elif polarity < 0:
-                negative += 1
-        if total == 0:
-            return "neutral"
-        positive_percent = (positive / total) * 100
-        negative_percent = (negative / total) * 100
-        if positive_percent > negative_percent + 10:
-            sentiment = f"{positive_percent:.1f}% positive"
-        elif negative_percent > positive_percent + 10:
-            sentiment = f"{negative_percent:.1f}% negative"
-        else:
-            sentiment = "neutral"
-        logger.info(f"Fetched X sentiment: {sentiment}")
-        return sentiment
-    except Exception as e:
-        logger.error(f"Error fetching X sentiment: {e}")
-        return "neutral"
+    # Hardcoded to "neutral" due to X API Free Basic plan restrictions (no read access)
+    logger.info(f"Skipping X sentiment fetch for query: {query} due to API restrictions")
+    return "neutral"
 
 # Fetch Finnhub sentiment for a stock ticker
 def get_finnhub_sentiment(ticker):
     try:
         url = f"https://finnhub.io/api/v1/news-sentiment?symbol={ticker}&token={FINNHUB_API_KEY}"
+        logger.info(f"Finnhub API URL: {url}")
         response = requests.get(url)
         response.raise_for_status()
         data = response.json()
@@ -258,7 +239,7 @@ def get_market_sentiment():
         # Fetch sentiment for stocks using Finnhub API
         for symbol in stock_symbols:
             sentiment = get_finnhub_sentiment(symbol)
-            stock_sentiments.append(f"{symbol}: {sentiment}")
+            stock_sentiments.append(f"{symbol}: {symbol}")
         
         # Fetch sentiment for gold, bonds, oil using X API
         for symbol, name in commodity_symbols.items():
@@ -349,44 +330,41 @@ def post_iot_alert():
 # Initialize the engagement agent
 agent = ShieldAigentEngagementAgent()
 
-# Schedule posts (WAT timezone, 15 posts/day total)
-# 5 market sentiment updates, 1 IoT alert, 4 mentions, 2 top accounts, 2 GM replies, 1 scam alert
-schedule.every().day.at("09:00").do(post_market_update)
-schedule.every().day.at("10:30").do(post_market_update)
-schedule.every().day.at("13:30").do(post_market_update)
-schedule.every().day.at("19:00").do(post_market_update)
-schedule.every().day.at("20:30").do(post_market_update)
+# Set up APScheduler
+scheduler = BackgroundScheduler(timezone="Africa/Lagos")  # WAT timezone
 
-schedule.every().day.at("16:00").do(post_iot_alert)
+# Schedule tasks
+scheduler.add_job(post_market_update, CronTrigger(hour=9, minute=0))
+scheduler.add_job(post_market_update, CronTrigger(hour=10, minute=30))
+scheduler.add_job(post_market_update, CronTrigger(hour=13, minute=30))
+scheduler.add_job(post_market_update, CronTrigger(hour=19, minute=0))
+scheduler.add_job(post_market_update, CronTrigger(hour=20, minute=30))
 
-schedule.every().day.at("06:30").do(agent.run_engagement_routine)  # Changed from 09:30 to 06:30
-schedule.every().day.at("19:30").do(agent.run_engagement_routine)
+scheduler.add_job(post_iot_alert, CronTrigger(hour=16, minute=0))
 
-schedule.every().day.at("12:00").do(monitor_scams)
+scheduler.add_job(agent.run_engagement_routine, CronTrigger(hour=6, minute=30))
+scheduler.add_job(agent.run_engagement_routine, CronTrigger(hour=19, minute=30))
 
-from flask import Flask
-import threading
+scheduler.add_job(monitor_scams, CronTrigger(hour=12, minute=0))
 
-app = Flask(__name__)
+# Start the scheduler
+logger.info("Starting APScheduler...")
+scheduler.start()
 
+# Flask routes
 @app.route("/")
 def home():
     return "ShieldAigent is running!"
 
-def run_scheduler():
-    while True:
-        try:
-            logger.info("Checking for pending scheduled tasks...")
-            schedule.run_pending()
-            logger.info("Finished checking scheduled tasks.")
-            time.sleep(60)
-        except KeyboardInterrupt:
-            logger.info("Script interrupted by user. Shutting down.")
-            break
-        except Exception as e:
-            logger.error(f"Error in scheduler loop: {e}")
-            time.sleep(60)
+@app.route("/post-now")
+def post_now():
+    try:
+        post_market_update()
+        return "Market update posted successfully!"
+    except Exception as e:
+        logger.error(f"Error in /post-now endpoint: {e}")
+        return f"Failed to post: {str(e)}", 500
 
 if __name__ == "__main__":
-    threading.Thread(target=run_scheduler, daemon=True).start()
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    port = int(os.environ.get("PORT", 8080))  # Railway provides PORT env variable
+    app.run(host="0.0.0.0", port=port)
