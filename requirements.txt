@@ -4,3 +4,5 @@ tweepy==3.10.0
 requests
 textblob
 python-dotenv
+web3==6.11.0
+py-solc-x==1.1.1
